@@ -24,9 +24,18 @@
             min-height: 100vh;
         }
 
+        /* --- GLOBAL FADE ANIMATION --- */
+        .fade-in {
+            opacity: 0;
+            animation: fadeInEffect 1.2s var(--ease) forwards;
+        }
+
+        @keyframes fadeInEffect {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         /* --- ANCHORED TOOLTIP SYSTEM --- */
-        .tooltip-anchor { position: relative; display: inline-block; width: 100%; }
-        
         .guide-tooltip {
             position: absolute;
             background: var(--tooltip-bg);
@@ -34,7 +43,7 @@
             padding: 16px 20px;
             font-size: 12px;
             line-height: 1.5;
-            z-index: 1000;
+            z-index: 9999;
             opacity: 0;
             pointer-events: none;
             transition: all 0.8s var(--ease);
@@ -49,20 +58,31 @@
             border: 8px solid transparent;
         }
 
-        .guide-tooltip.visible { opacity: 1; transform: translateY(0); }
+        .guide-tooltip.visible { opacity: 1; transform: translate(-50%, 0); }
 
-        /* Specific Anchors */
-        #header-guide { top: 110%; left: 0; transform: translateY(10px); }
+        /* HEADER TOOLTIP (Top Anchor) */
+        #header-guide { top: 110%; left: 160px; transform: translate(-50%, 10px); }
         #header-guide::after { bottom: 100%; left: 30px; border-bottom-color: var(--tooltip-bg); }
 
-        #collection-guide { bottom: 110%; left: 50%; transform: translate(-50%, -10px); }
-        #collection-guide::after { top: 100%; left: 50%; transform: translateX(-50%); border-top-color: var(--tooltip-bg); }
+        /* COLLECTION TOOLTIPS (Bottom Anchor) */
+        .bottom-tooltip {
+            top: 105%; /* Position below the card */
+            left: 50%;
+            transform: translate(-50%, 10px);
+        }
+
+        .bottom-tooltip::after {
+            bottom: 100%; /* Arrow points up */
+            left: 50%;
+            transform: translateX(-50%);
+            border-bottom-color: var(--tooltip-bg);
+        }
 
         #expand-prompt { 
-            bottom: 110%; left: 50%; transform: translate(-50%, -10px); 
-            background: var(--oxblood); color: var(--white); 
+            background: var(--oxblood); 
+            color: var(--white); 
         }
-        #expand-prompt::after { top: 100%; left: 50%; transform: translateX(-50%); border-top-color: var(--oxblood); }
+        #expand-prompt::after { border-bottom-color: var(--oxblood); }
 
         /* --- PAGE HEADER --- */
         .archive-header {
@@ -72,18 +92,18 @@
             justify-content: space-between;
             align-items: flex-end;
             position: relative;
+            z-index: 100;
         }
 
         .header-title h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(32px, 5vw, 48px); font-weight: 300; font-style: italic; margin-bottom: 0.5rem; }
         .header-title p { font-size: 10px; text-transform: uppercase; letter-spacing: 0.4em; color: var(--silver); }
         
-        .archive-actions { display: flex; align-items: center; }
         .action-link { font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em; color: var(--silver); text-decoration: none; border-bottom: 1px solid transparent; transition: 0.3s; margin-left: 2rem; }
         .action-link:hover { color: white; border-bottom: 1px solid var(--white); }
 
         /* --- COLLECTIONS GRID --- */
-        .collections-container { padding: 6vh 8vw; display: grid; grid-template-columns: repeat(2, 1fr); gap: 4rem; }
-        .collection-card { cursor: pointer; text-decoration: none; color: inherit; }
+        .collections-container { padding: 6vh 8vw; display: grid; grid-template-columns: repeat(2, 1fr); gap: 4rem; position: relative; z-index: 50; }
+        .collection-card { cursor: pointer; text-decoration: none; color: inherit; position: relative; display: block; }
         .collection-hero { aspect-ratio: 16/9; background: #111; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 1.5rem; transition: 0.5s; }
         .collection-hero img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; transition: 1.2s var(--ease); }
         
@@ -94,7 +114,7 @@
         .item-count { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--silver); }
 
         /* --- ARCHIVAL LIST --- */
-        .recent-artifacts { padding: 0 8vw 10vh; }
+        .recent-artifacts { padding: 0 8vw 10vh; position: relative; z-index: 10; }
         .section-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.3em; color: var(--oxblood); margin-bottom: 3rem; display: block; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 2rem; }
         
         .artifact-list-row { 
@@ -113,13 +133,13 @@
             .collections-container { grid-template-columns: 1fr; gap: 2.5rem; }
             .archive-header { flex-direction: column; align-items: flex-start; gap: 2rem; }
             .artifact-list-row .row-creator { display: none; }
-            .guide-tooltip { width: 240px; font-size: 11px; }
+            .guide-tooltip { width: 280px; font-size: 11px; }
         }
     </style>
 </head>
 <body>
 
-    <header class="archive-header">
+    <header class="archive-header fade-in">
         <div class="header-title">
             <h1>Personal Archive</h1>
             <p>Vault No. 892 // User: Curator_Main</p>
@@ -134,30 +154,30 @@
         </div>
     </header>
 
-    <main class="collections-container">
+    <main class="collections-container fade-in" style="animation-delay: 0.3s;">
         <a href="collection.html" class="collection-card">
-            <div class="tooltip-anchor">
-                <div class="collection-hero">
-                    <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1000&q=80">
-                </div>
-                <div id="collection-guide" class="guide-tooltip">
-                    <strong>Non-Linear Study</strong><br>
-                    Artifacts can be grouped into collections—preserving the evolution of a single idea across different creators.
-                </div>
-                <div id="expand-prompt" class="guide-tooltip">
-                    <strong>Explore Collection</strong><br>
-                    Click to enter the "Deconstructed Uniforms" study and view the connection between these artifacts.
-                </div>
+            <div class="collection-hero">
+                <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1000&q=80">
             </div>
+            
             <div class="collection-meta">
                 <span class="collection-name">Deconstructed Uniforms</span>
                 <span class="item-count">12 Artifacts</span>
+            </div>
+
+            <div id="collection-guide" class="guide-tooltip bottom-tooltip">
+                <strong>Non-Linear Study</strong><br>
+                Artifacts can be grouped into collections—preserving the evolution of a single idea across different creators.
+            </div>
+            <div id="expand-prompt" class="guide-tooltip bottom-tooltip">
+                <strong>Explore Collection</strong><br>
+                Click to enter the "Deconstructed Uniforms" study and view the connection between these artifacts.
             </div>
         </a>
 
         <a href="#" class="collection-card">
             <div class="collection-hero">
-                <img src="assets/textile.jpg">
+                <img src="textile.jpg">
             </div>
             <div class="collection-meta">
                 <span class="collection-name">Indigo Textile Studies</span>
@@ -166,12 +186,12 @@
         </a>
     </main>
 
-    <section class="recent-artifacts">
+    <section class="recent-artifacts fade-in" style="animation-delay: 0.6s;">
         <span class="section-label">Individually Archived Records</span>
         
         <div class="artifact-list-row">
             <div class="row-info">
-                <img src="assets/ivory.jpg" class="row-thumb">
+                <img src="ivory.jpg" class="row-thumb">
                 <span class="row-title">Ivory Drape Gown</span>
             </div>
             <span class="row-creator">Amara K.</span>
@@ -180,7 +200,7 @@
 
         <div class="artifact-list-row">
             <div class="row-info">
-                <img src="assets/simple.jpg" class="row-thumb">
+                <img src="simple.jpg" class="row-thumb">
                 <span class="row-title">Soft Power Editorial</span>
             </div>
             <span class="row-creator">Kemi Ade</span>
@@ -189,7 +209,7 @@
 
         <div class="artifact-list-row">
             <div class="row-info">
-                <img src="assets/neo.jpg" class="row-thumb">
+                <img src="neo.jpg" class="row-thumb">
                 <span class="row-title">Neo-Tribal Concept</span>
             </div>
             <span class="row-creator">Fola A.</span>
@@ -198,7 +218,7 @@
 
         <div class="artifact-list-row">
             <div class="row-info">
-                <img src="assets/textile.jpg" class="row-thumb">
+                <img src="textile.jpg" class="row-thumb">
                 <span class="row-title">Hand-Dyed Indigo Study</span>
             </div>
             <span class="row-creator">Zainab M.</span>
@@ -207,7 +227,7 @@
 
         <div class="artifact-list-row">
             <div class="row-info">
-                <img src="assets/fragment.jpg" class="row-thumb">
+                <img src="fragment.jpg" class="row-thumb">
                 <span class="row-title">Fragmented Silhouette</span>
             </div>
             <span class="row-creator">Lina O.</span>
@@ -216,7 +236,7 @@
 
         <div class="artifact-list-row">
             <div class="row-info">
-                <img src="assets/uniform.jpg" class="row-thumb">
+                <img src="uniform.jpg" class="row-thumb">
                 <span class="row-title">Deconstructed Uniform Study</span>
             </div>
             <span class="row-creator">Tunde S.</span>
@@ -230,7 +250,6 @@
             const collectionTooltip = document.getElementById('collection-guide');
             const expandPrompt = document.getElementById('expand-prompt');
 
-            // Sequence tooltips: Header -> Context -> Action
             setTimeout(() => {
                 headerTooltip.classList.add('visible');
                 setTimeout(() => {

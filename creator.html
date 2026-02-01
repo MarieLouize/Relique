@@ -18,9 +18,18 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background-color: var(--black); color: var(--white); font-family: 'Inter', sans-serif; overflow-x: hidden; scroll-behavior: smooth; }
 
+        /* --- FADE ANIMATION --- */
+        .fade-in {
+            opacity: 0;
+            animation: globalFade 1.2s var(--ease) forwards;
+        }
+
+        @keyframes globalFade {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         /* --- ANCHORED TOOLTIP SYSTEM --- */
-        .tooltip-container { position: relative; width: 100%; }
-        
         .guide-tooltip {
             position: absolute; background: var(--tooltip-bg); color: var(--oxblood);
             padding: 16px 20px; font-size: 12px; line-height: 1.5; z-index: 1000;
@@ -52,15 +61,17 @@
 
         .archive-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; padding: 0 8vw; max-width: 1400px; margin: 0 auto; position: relative; }
         .artifact-card { position: relative; cursor: pointer; text-decoration: none; color: inherit; }
-        .card-image-wrap { aspect-ratio: 3/4; background: #111; overflow: hidden; margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.05); position: relative; }
+        .card-image-wrap { aspect-ratio: 3/4; background: #111; overflow: hidden; margin-bottom: 1.5rem; border: 1px solid rgba(255,255,255,0.05); position: relative; }
         .card-image-wrap img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: all 0.8s var(--ease); }
+        .artifact-card:hover img { opacity: 1; transform: scale(1.02); }
+        
         .archived-stamp { position: absolute; top: 15px; right: 15px; font-size: 8px; text-transform: uppercase; letter-spacing: 0.1em; padding: 4px 8px; border: 1px solid var(--oxblood); color: #FF4D61; background: var(--black); z-index: 5; }
         .card-meta { display: flex; justify-content: space-between; align-items: baseline; }
         .card-title { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 18px; }
 
         /* --- FINAL CTA --- */
-        .final-cta-wrap { display: flex; justify-content: center; padding: 10vh 0 15vh; opacity: 0; transition: opacity 1s var(--ease); }
-        .final-cta-wrap.visible { opacity: 1; }
+        .final-cta-wrap { display: flex; flex-direction: column; align-items: center; padding: 10vh 0 15vh; opacity: 0; transform: translateY(20px); transition: all 1.2s var(--ease); }
+        .final-cta-wrap.visible { opacity: 1; transform: translateY(0); }
         .cta-btn { background: transparent; border: 1px solid var(--white); color: var(--white); padding: 20px 40px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.4em; cursor: pointer; transition: 0.4s; text-decoration: none; }
         .cta-btn:hover { background: var(--white); color: var(--black); }
 
@@ -69,7 +80,7 @@
 </head>
 <body>
 
-    <header class="creator-header">
+    <header class="creator-header fade-in">
         <div class="profile-frame">
             <img src="ad1.jpg" alt="Amara Odu">
         </div>
@@ -82,16 +93,16 @@
         </div>
     </header>
 
-    <div class="creator-statement">
+    <div class="creator-statement fade-in" style="animation-delay: 0.3s;">
         “I explore the relationship between discarded materials and traditional silhouettes. Each piece is documented and released into the archive.”
     </div>
 
-    <nav class="filter-nav">
+    <nav class="filter-nav fade-in" style="animation-delay: 0.5s;">
         <button class="filter-btn active">All Artifacts</button>
         <button class="filter-btn">Archived Only</button>
     </nav>
 
-    <main class="archive-grid" id="main-grid">
+    <main class="archive-grid fade-in" id="main-grid" style="animation-delay: 0.7s;">
         <div id="grid-anchor" class="guide-tooltip">
             <strong>Permanent Visibility</strong><br>
             Even when a piece is sold, it stays visible—preserving inspiration and authorship without the pressure of a social timeline.
@@ -110,7 +121,7 @@
         <div class="artifact-card">
             <div class="card-image-wrap">
                 <div class="archived-stamp">Concept piece</div>
-                <img src="https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=600&q=80">
+                <img src="simple.jpg">
             </div>
             <div class="card-meta">
                 <span class="card-title">Shadow Silk Study</span>
@@ -120,7 +131,7 @@
         <div class="artifact-card">
             <div class="card-image-wrap">
                 <div class="archived-stamp">One-of-a-kind</div>
-                <img src="https://images.unsplash.com/photo-1502716119720-b23a93e5fe1b?auto=format&fit=crop&w=600&q=80">
+                <img src="neo.jpg">
             </div>
             <div class="card-meta">
                 <span class="card-title">Deconstructed Blazer</span>
@@ -129,7 +140,7 @@
     </main>
 
     <div class="final-cta-wrap" id="cta-container">
-        <a href="takeaway.html" class="cta-btn">Complete Demo</a>
+        <a href="takeaway.html" class="cta-btn" id="final-button">Complete Demo</a>
     </div>
 
     <script>
@@ -137,6 +148,7 @@
             const hTooltip = document.getElementById('header-anchor');
             const gTooltip = document.getElementById('grid-anchor');
             const cta = document.getElementById('cta-container');
+            const finalButton = document.getElementById('final-button');
 
             // Sequence Tooltips
             setTimeout(() => {
@@ -144,12 +156,18 @@
                 setTimeout(() => {
                     hTooltip.classList.remove('visible');
                     setTimeout(() => {
-                        window.scrollTo({ top: document.getElementById('main-grid').offsetTop - 200, behavior: 'smooth' });
+                        // Scroll to grid focus
+                        window.scrollTo({ top: document.getElementById('main-grid').offsetTop - 150, behavior: 'smooth' });
                         setTimeout(() => {
                             gTooltip.classList.add('visible');
                             setTimeout(() => {
                                 gTooltip.classList.remove('visible');
+                                
+                                // Show CTA and Focus on it
                                 cta.classList.add('visible');
+                                setTimeout(() => {
+                                    finalButton.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                }, 600);
                             }, 5000);
                         }, 800);
                     }, 1000);

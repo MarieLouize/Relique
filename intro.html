@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relique | Intro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Inter:wght@200;300;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --oxblood: #390007;
+            --white: #F0F4F5;
+            /* A custom 'luxury' easing: slow start, very long smooth finish */
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --transition-speed: 2.2s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            height: 100%;
+            background-color: var(--oxblood);
+            color: var(--white);
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+        }
+
+        /* --- TEXTURE LAYERS --- */
+        .container {
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            padding: 8vh 8vw;
+            position: relative;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: 
+                linear-gradient(135deg, transparent 25%, rgba(0,0,0,.05) 25%, rgba(0,0,0,.05) 50%, transparent 50%, transparent 75%, rgba(0,0,0,.05) 75%),
+                linear-gradient(45deg, transparent 25%, rgba(255,255,255,.02) 25%, rgba(255,255,255,.02) 50%, transparent 50%, transparent 75%, rgba(255,255,255,.02) 75%);
+            background-size: 24px 24px;
+            z-index: 1;
+        }
+
+        .container::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.22'/%3E%3C/svg%3E");
+            z-index: 2;
+            pointer-events: none;
+            mix-blend-mode: soft-light;
+        }
+
+        /* --- TYPOGRAPHY --- */
+        .serif { font-family: 'Cormorant Garamond', serif; font-style: italic; }
+        
+        .header {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            text-align: center;
+            margin-top: 12vh;
+        }
+
+        .header span {
+            display: block;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.8em;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .header h1 {
+            font-size: clamp(4rem, 10vw, 8rem);
+            font-weight: 300;
+            line-height: 1;
+        }
+
+        .description {
+            position: relative;
+            z-index: 10;
+            margin-top: 18vh;
+            max-width: 420px;
+            border-left: 1px solid rgba(255, 255, 255, 0.2);
+            padding-left: 30px;
+        }
+
+        .description p {
+            font-size: 15px;
+            font-weight: 200;
+            line-height: 1.8;
+            letter-spacing: 0.1em;
+            opacity: 0.8;
+        }
+
+        /* --- CTA --- */
+        .btn-wrapper {
+            position: absolute;
+            bottom: 8vh;
+            right: 8vw;
+            z-index: 10;
+        }
+
+        .cta {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+            padding: 22px 50px;
+            text-transform: uppercase;
+            font-size: 10px;
+            letter-spacing: 0.4em;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: all 0.6s var(--ease-out-expo);
+        }
+
+        .cta:hover {
+            background: white;
+            color: var(--oxblood);
+            transform: translateY(-5px);
+        }
+
+        .cta svg {
+            width: 18px;
+            transition: transform 0.6s var(--ease-out-expo);
+        }
+
+        .cta:hover svg {
+            transform: translateX(8px);
+        }
+
+        /* --- ANIMATIONS --- */
+        .reveal {
+            opacity: 0;
+            animation: revealEffect var(--transition-speed) var(--ease-out-expo) forwards;
+        }
+
+        .reveal-header { animation-name: revealHeader; }
+        .reveal-left { animation-name: revealLeft; animation-delay: 0.6s; }
+        .reveal-right { animation-name: revealRight; animation-delay: 1.2s; }
+
+        @keyframes revealHeader {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes revealLeft {
+            from { opacity: 0; transform: translateX(-60px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes revealRight {
+            from { opacity: 0; transform: translateX(60px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* --- TRANSITION CURTAIN --- */
+        #curtain {
+            position: fixed;
+            inset: 0;
+            background: var(--oxblood);
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1.5s ease-in-out;
+        }
+
+        .fade-out { opacity: 1 !important; pointer-events: auto !important; }
+
+    </style>
+</head>
+<body>
+
+    <div id="curtain"></div>
+
+    <div class="container">
+        <header class="header reveal reveal-header">
+            <span>Welcome to</span>
+            <h1 class="serif">Relique</h1>
+        </header>
+
+        <div class="description reveal reveal-left">
+            <p>
+                "A visual platform for fashion design artifacts, where creative works are preserved and discovered.”
+            </p>
+        </div>
+
+        <div class="btn-wrapper reveal reveal-right">
+            <button class="cta" onclick="handleStart()">
+                Start Demo
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+        <script>
+        function handleStart() {
+            // Trigger the fade-out curtain effect
+            document.getElementById('curtain').classList.add('fade-out');
+            
+            // Wait for the transition duration (1.5s as defined in CSS) 
+            // before navigating to the next page
+            setTimeout(() => {
+                window.location.href = 'feed.html';
+            }, 1500);
+        }
+    </script>feed
+</body>
+</html>

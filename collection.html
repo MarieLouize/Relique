@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relique | Collection View</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Inter:wght@200;300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #0E0E0E;
+            --oxblood: #390007;
+            --white: #F0F4F5;
+            --silver: #9BA0AB;
+            --tooltip-bg: #9BA0AB;
+            --ease: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: var(--black); color: var(--white); font-family: 'Inter', sans-serif; overflow-x: hidden; scroll-behavior: smooth; }
+
+        /* --- ANCHORED TOOLTIP SYSTEM --- */
+        .guide-tooltip {
+            position: absolute;
+            background: var(--tooltip-bg);
+            color: var(--oxblood);
+            padding: 16px 20px;
+            font-size: 11px;
+            line-height: 1.5;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.8s var(--ease);
+            width: 280px;
+            max-width: 80vw;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            border-radius: 2px;
+        }
+
+        .guide-tooltip::after {
+            content: '';
+            position: absolute;
+            border: 8px solid transparent;
+        }
+
+        .guide-tooltip.visible { opacity: 1; transform: translateY(0); }
+
+        /* Header Tooltip */
+        #header-anchor { top: 110%; left: 0; transform: translateY(10px); }
+        #header-anchor::after { bottom: 100%; left: 30px; border-bottom-color: var(--tooltip-bg); }
+
+        /* Thread Tooltip */
+        #thread-anchor { top: 50%; left: -20px; transform: translateX(-100%) translateY(-50%); }
+        #thread-anchor::after { left: 100%; top: 50%; transform: translateY(-50%); border-left-color: var(--tooltip-bg); }
+
+        /* Profile Tooltip - Fixed and Centered */
+        #profile-anchor { top: 110%; left: 50%; transform: translateX(-50%) translateY(10px); }
+        #profile-anchor::after { bottom: 100%; left: 50%; transform: translateX(-50%); border-bottom-color: var(--tooltip-bg); }
+
+        /* --- LAYOUT --- */
+        .coll-header { padding: 12vh 8vw 6vh; border-bottom: 1px solid rgba(255,255,255,0.05); position: relative; }
+        .back-nav { font-size: 9px; text-transform: uppercase; letter-spacing: 0.3em; color: var(--silver); text-decoration: none; display: flex; align-items: center; gap: 10px; margin-bottom: 3rem; }
+        .coll-info h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(38px, 6vw, 56px); font-weight: 300; font-style: italic; margin-bottom: 1rem; }
+        
+        .archive-study { padding: 8vh 8vw 20vh; position: relative; }
+
+        /* The vertical thread of intent */
+        .archive-study::before {
+            content: ''; position: absolute; top: 0; left: 8.5vw;
+            width: 1px; height: 100%;
+            background: linear-gradient(to bottom, var(--oxblood), rgba(155, 160, 171, 0.1), transparent);
+            z-index: 1;
+        }
+
+        .study-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 120px; position: relative; z-index: 2; }
+        .study-card { display: flex; flex-direction: column; gap: 1.5rem; text-decoration: none; color: inherit; position: relative; }
+        .study-img-wrap { width: 100%; aspect-ratio: 4/5; background: #111; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
+        .study-img-wrap img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: 1.2s var(--ease); }
+        
+        .study-meta { padding-left: 20px; border-left: 2px solid transparent; transition: 0.4s; }
+        .study-card:hover .study-meta { border-color: var(--oxblood); }
+        .study-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; margin-bottom: 5px; }
+        .study-creator { font-size: 9px; text-transform: uppercase; letter-spacing: 0.2em; color: var(--silver); }
+
+        @media (max-width: 900px) {
+            .study-grid { grid-template-columns: 1fr; gap: 80px; }
+            .archive-study::before { left: 4vw; }
+            #thread-anchor { top: -20px; left: 0; transform: translateY(-100%); width: 100%; }
+            #thread-anchor::after { top: 100%; left: 30px; border-top-color: var(--tooltip-bg); border-left-color: transparent; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="coll-header">
+        <a href="#" class="back-nav">← Back to Archive</a>
+        <div class="coll-info">
+            <h1>Deconstructed Uniforms</h1>
+        </div>
+        <div id="header-anchor" class="guide-tooltip">
+            <strong>Thematic Study</strong><br>
+            A collection isn’t just a folder—it’s a visual inquiry where artifacts contribute to a single thesis.
+        </div>
+    </header>
+
+    <main class="archive-study">
+        <div class="study-grid">
+            
+            <a href="#" class="study-card">
+                <div id="thread-anchor" class="guide-tooltip">
+                    <strong>The Thread of Intent</strong><br>
+                    Notice how the thread connects base research to final implementation.
+                </div>
+                <div class="study-img-wrap">
+                    <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80">
+                </div>
+                <div class="study-meta">
+                    <h3 class="study-title">Uniform Anatomy Study</h3>
+                    <p class="study-creator">Tunde S.</p>
+                </div>
+            </a>
+
+            <a href="creator.html" id="target-creator" class="study-card" style="margin-top: 15vh;">
+                <div class="study-img-wrap">
+                    <img src="https://images.unsplash.com/photo-1502716119720-b23a93e5fe1b?auto=format&fit=crop&w=800&q=80">
+                </div>
+                <div class="study-meta">
+                    <h3 class="study-title">Fragmented Blazer</h3>
+                    <p class="study-creator">Amara Odu</p>
+                </div>
+                <div id="profile-anchor" class="guide-tooltip">
+                    <strong>Meet the Creator</strong><br>
+                    Every artifact leads back to a creator’s archive. Click Amara Odu to explore her work.
+                </div>
+            </a>
+
+        </div>
+    </main>
+
+    <script>
+        window.onload = () => {
+            const hTooltip = document.getElementById('header-anchor');
+            const tTooltip = document.getElementById('thread-anchor');
+            const pTooltip = document.getElementById('profile-anchor');
+            const creatorCard = document.getElementById('target-creator');
+
+            // Sequence
+            setTimeout(() => {
+                hTooltip.classList.add('visible');
+                setTimeout(() => hTooltip.classList.remove('visible'), 4000);
+            }, 1000);
+
+            setTimeout(() => {
+                tTooltip.classList.add('visible');
+                setTimeout(() => tTooltip.classList.remove('visible'), 4000);
+            }, 6000);
+
+            // Third Tooltip with Focus
+            setTimeout(() => {
+                // Focus: Scroll smoothly to the creator card
+                creatorCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                // Show Tooltip after scroll begins
+                setTimeout(() => {
+                    pTooltip.classList.add('visible');
+                }, 800);
+            }, 11000);
+        };
+    </script>
+</body>
+</html>

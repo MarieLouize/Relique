@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relique | Creator Archive</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Inter:wght@200;300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #0E0E0E;
+            --oxblood: #390007;
+            --white: #F0F4F5;
+            --silver: #9BA0AB;
+            --tooltip-bg: #9BA0AB;
+            --ease: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: var(--black); color: var(--white); font-family: 'Inter', sans-serif; overflow-x: hidden; scroll-behavior: smooth; }
+
+        /* --- ANCHORED TOOLTIP SYSTEM --- */
+        .tooltip-container { position: relative; width: 100%; }
+        
+        .guide-tooltip {
+            position: absolute; background: var(--tooltip-bg); color: var(--oxblood);
+            padding: 16px 20px; font-size: 12px; line-height: 1.5; z-index: 1000;
+            opacity: 0; pointer-events: none; transition: all 0.8s var(--ease);
+            width: 320px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); border-radius: 2px;
+        }
+
+        .guide-tooltip::after { content: ''; position: absolute; border: 8px solid transparent; }
+        .guide-tooltip.visible { opacity: 1; transform: translateY(0); }
+
+        #header-anchor { top: 110%; left: 50%; transform: translateX(-50%) translateY(10px); }
+        #header-anchor::after { bottom: 100%; left: 50%; transform: translateX(-50%); border-bottom-color: var(--tooltip-bg); }
+
+        #grid-anchor { top: -20px; left: 50%; transform: translateX(-50%) translateY(-100%); }
+        #grid-anchor::after { top: 100%; left: 50%; transform: translateX(-50%); border-top-color: var(--tooltip-bg); }
+
+        /* --- LAYOUT --- */
+        .creator-header { padding: 12vh 8vw 4vh; display: flex; flex-direction: column; align-items: center; text-align: center; position: relative; }
+        .profile-frame { width: 120px; height: 120px; border-radius: 50%; padding: 5px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 2rem; }
+        .profile-frame img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; filter: grayscale(100%); }
+        .creator-name { font-family: 'Cormorant Garamond', serif; font-size: clamp(40px, 6vw, 64px); font-weight: 300; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+        .creator-descriptor { font-size: 11px; text-transform: uppercase; letter-spacing: 0.4em; color: var(--silver); margin-bottom: 4vh; }
+
+        .creator-statement { max-width: 500px; margin: 0 auto 10vh; text-align: center; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 20px; line-height: 1.8; color: var(--silver); font-weight: 300; padding: 0 20px; }
+
+        .filter-nav { display: flex; justify-content: center; gap: 2rem; margin-bottom: 6vh; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 1rem; }
+        .filter-btn { background: none; border: none; color: var(--silver); font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em; cursor: pointer; }
+        .filter-btn.active { color: var(--white); border-bottom: 1px solid var(--white); padding-bottom: 0.9rem; }
+
+        .archive-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; padding: 0 8vw; max-width: 1400px; margin: 0 auto; position: relative; }
+        .artifact-card { position: relative; cursor: pointer; text-decoration: none; color: inherit; }
+        .card-image-wrap { aspect-ratio: 3/4; background: #111; overflow: hidden; margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.05); position: relative; }
+        .card-image-wrap img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: all 0.8s var(--ease); }
+        .archived-stamp { position: absolute; top: 15px; right: 15px; font-size: 8px; text-transform: uppercase; letter-spacing: 0.1em; padding: 4px 8px; border: 1px solid var(--oxblood); color: #FF4D61; background: var(--black); z-index: 5; }
+        .card-meta { display: flex; justify-content: space-between; align-items: baseline; }
+        .card-title { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 18px; }
+
+        /* --- FINAL CTA --- */
+        .final-cta-wrap { display: flex; justify-content: center; padding: 10vh 0 15vh; opacity: 0; transition: opacity 1s var(--ease); }
+        .final-cta-wrap.visible { opacity: 1; }
+        .cta-btn { background: transparent; border: 1px solid var(--white); color: var(--white); padding: 20px 40px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.4em; cursor: pointer; transition: 0.4s; text-decoration: none; }
+        .cta-btn:hover { background: var(--white); color: var(--black); }
+
+        @media (max-width: 900px) { .archive-grid { grid-template-columns: repeat(2, 1fr); padding: 0 4vw; gap: 1rem; } .guide-tooltip { width: 260px; } }
+    </style>
+</head>
+<body>
+
+    <header class="creator-header">
+        <div class="profile-frame">
+            <img src="ad1.jpg" alt="Amara Odu">
+        </div>
+        <h1 class="creator-name">AMARA ODU</h1>
+        <p class="creator-descriptor">Fashion Designer · Textile & Upcycled Garments<br>Based in Lagos, Nigeria</p>
+        
+        <div id="header-anchor" class="guide-tooltip">
+            <strong>Living Record</strong><br>
+            Every artifact belongs to a creator’s archive—a body of work that reflects their style, materials, and ideas over time.
+        </div>
+    </header>
+
+    <div class="creator-statement">
+        “I explore the relationship between discarded materials and traditional silhouettes. Each piece is documented and released into the archive.”
+    </div>
+
+    <nav class="filter-nav">
+        <button class="filter-btn active">All Artifacts</button>
+        <button class="filter-btn">Archived Only</button>
+    </nav>
+
+    <main class="archive-grid" id="main-grid">
+        <div id="grid-anchor" class="guide-tooltip">
+            <strong>Permanent Visibility</strong><br>
+            Even when a piece is sold, it stays visible—preserving inspiration and authorship without the pressure of a social timeline.
+        </div>
+
+        <div class="artifact-card">
+            <div class="card-image-wrap">
+                <div class="archived-stamp">One-of-a-kind</div>
+                <img src="ivory.jpg">
+            </div>
+            <div class="card-meta">
+                <span class="card-title">Ivory Drape Gown</span>
+            </div>
+        </div>
+
+        <div class="artifact-card">
+            <div class="card-image-wrap">
+                <div class="archived-stamp">Concept piece</div>
+                <img src="https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=600&q=80">
+            </div>
+            <div class="card-meta">
+                <span class="card-title">Shadow Silk Study</span>
+            </div>
+        </div>
+
+        <div class="artifact-card">
+            <div class="card-image-wrap">
+                <div class="archived-stamp">One-of-a-kind</div>
+                <img src="https://images.unsplash.com/photo-1502716119720-b23a93e5fe1b?auto=format&fit=crop&w=600&q=80">
+            </div>
+            <div class="card-meta">
+                <span class="card-title">Deconstructed Blazer</span>
+            </div>
+        </div>
+    </main>
+
+    <div class="final-cta-wrap" id="cta-container">
+        <a href="takeaway.html" class="cta-btn">Complete Demo</a>
+    </div>
+
+    <script>
+        window.onload = () => {
+            const hTooltip = document.getElementById('header-anchor');
+            const gTooltip = document.getElementById('grid-anchor');
+            const cta = document.getElementById('cta-container');
+
+            // Sequence Tooltips
+            setTimeout(() => {
+                hTooltip.classList.add('visible');
+                setTimeout(() => {
+                    hTooltip.classList.remove('visible');
+                    setTimeout(() => {
+                        window.scrollTo({ top: document.getElementById('main-grid').offsetTop - 200, behavior: 'smooth' });
+                        setTimeout(() => {
+                            gTooltip.classList.add('visible');
+                            setTimeout(() => {
+                                gTooltip.classList.remove('visible');
+                                cta.classList.add('visible');
+                            }, 5000);
+                        }, 800);
+                    }, 1000);
+                }, 5000);
+            }, 1000);
+        };
+    </script>
+</body>
+</html>
